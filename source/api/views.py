@@ -70,6 +70,20 @@ class QuoteDeleteApiView(APIView):
         if request.user.has_perm('delete_quote'):
             quote = get_object_or_404(Quote, pk=kwargs['pk'])
             quote.delete()
-            return Response({'pk' : kwargs['pk']}, status=204)
+            return JsonResponse({'pk' : kwargs['pk']}, status=204)
         else:
             return Response({"err": "К сожалению у вас нет доступа для удаления"}, status=HTTPStatus.BAD_REQUEST)
+
+class AddRateApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        quote = Quote.objects.get(pk=kwargs['pk'])
+        quote.rate += 1
+        quote.save()
+        return Response({'answer' : quote.rate}, status=HTTPStatus.OK)
+
+class RemoveRateApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        quote = Quote.objects.get(pk=kwargs['pk'])
+        quote.rate -= 1
+        quote.save()
+        return JsonResponse({}, status=HTTPStatus.OK)

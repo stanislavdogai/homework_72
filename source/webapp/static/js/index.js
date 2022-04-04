@@ -1,12 +1,8 @@
 async function makeRequest(url, method) {
-    console.log('1')
     let response = await fetch(url, method);
-    console.log('2')
     if (response.ok) {
-        console.log('3')
         return await response.json();
     } else {
-        console.log('4')
         let error = new Error(response.statusText);
         error.response = response;
         throw error;
@@ -44,6 +40,7 @@ function quoteRender(id, name, text, rate, email, date){
     a_text.innerText = `${text}`
     a_text.href = `http://localhost:8000/api/${id}/detail`
     p_rate.innerText = `Оценка ${rate}`
+    p_rate.id = `quote-rate-${id}`
     p_email.innerText = `Почта ${email}`
     p_date.innerText = `Дата создания ${date}`
 
@@ -85,20 +82,52 @@ let listQuote = async function (event){
         q = quoteRender(quote.id, quote.name, quote.text, quote.rate, quote.email, quote.created_at)
         del_button = buttonRender(`api/${quote.id}/delete`, ' Удалить')
         upd_button = buttonRender(`${quote.id}`, ' Обновить')
+        add_button = buttonRender(`api/${quote.id}/add/rate`, ' +')
+        rem_button = buttonRender(`api/${quote.id}/remove/rate`, ' -')
         del_button.onclick = deleteQuote
         upd_button.onclick = updateQuoteForm
+        add_button.dataset['id'] = quote.id
+        rem_button.dataset['id'] = quote.id
+        add_button.onclick = addRate
+        rem_button.onclick = removeRate
         container.appendChild(q)
         container.appendChild(del_button)
         container.appendChild(upd_button)
+        container.appendChild(add_button)
+        container.appendChild(rem_button)
     }
 }
 
-let deleteQuote = async function(event){
+let addRate = async function (event){
+    let url = event.target.dataset.url
+    let id = event.target.dataset.id
+    let add = makeRequest(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+    // let p = document.getElementById(`quote-rate-${id}`)
+    console.log('add', add)
+    // p.innerText = add.answer
+}
+
+let removeRate = async function (event){
+    let url = event.target.dataset.url
+    let add = makeRequest(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+}
+
+let deleteQuote = function(event){
     var url = event.target.dataset.url
-    csrf_token = await makeRequest('http://localhost:8000/api/csrftoken')
+    csrf_token = makeRequest('http://localhost:8000/api/csrftoken')
     var csrf = getCookie('csrftoken')
-    let quote = await makeRequest(url, {method: 'DELETE',
-                                        body: {"delete" : "delete"},
+    let quote = makeRequest(url, {method: 'DELETE',
+                                        // body: JSON.stringify({}),
                                         headers: {
                                             // 'Content-Type': 'application/json',
                                             // 'accept' : 'application/json',
@@ -212,12 +241,22 @@ let display = async function (){
         q = quoteRender(quote.id, quote.name, quote.text, quote.rate, quote.email, quote.created_at)
         del_button = buttonRender(`api/${quote.id}/delete`, ' Удалить')
         upd_button = buttonRender(`${quote.id}`, ' Обновить')
+        add_button = buttonRender(`api/${quote.id}/add/rate`, ' +')
+        rem_button = buttonRender(`api/${quote.id}/remove/rate`, ' -')
         del_button.onclick = deleteQuote
         upd_button.onclick = updateQuoteForm
+        add_button.onclick = addRate
+        rem_button.onclick = removeRate
+        add_button.dataset['id'] = quote.id
+        rem_button.dataset['id'] = quote.id
         container.appendChild(q)
         container.appendChild(del_button)
         container.appendChild(upd_button)
+        container.appendChild(add_button)
+        container.appendChild(rem_button)
     }
 }
 
 display()
+
+// window.addEventListener('load', listQuote)
