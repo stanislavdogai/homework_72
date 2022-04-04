@@ -1,0 +1,38 @@
+[
+{
+  "model": "webapp.quote",
+  "pk": 18,
+  "fields": {
+    "text": "22",
+    "name": "Attaractor",
+    "email": "admin@site.register",
+    "rate": 0,
+    "is_status": false,
+    "created_at": "2022-04-04T11:45:50.956Z"
+  }
+},
+{
+  "model": "webapp.quote",
+  "pk": 19,
+  "fields": {
+    "text": "text3",
+    "name": "Instagram",
+    "email": "admin@site.register",
+    "rate": 0,
+    "is_status": true,
+    "created_at": "2022-04-04T11:50:34.736Z"
+  }
+},
+{
+  "model": "webapp.quote",
+  "pk": 20,
+  "fields": {
+    "text": "citata",
+    "name": "blablabla",
+    "email": "developer@gmail.com",
+    "rate": 0,
+    "is_status": true,
+    "created_at": "2022-04-04T11:50:47.338Z"
+  }
+}
+]

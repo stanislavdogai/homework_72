@@ -58,6 +58,10 @@ function inputRender(value, inst=''){
     input.id = value
     input.placeholder = value
     input.value = inst
+    input.classList.add('form-control')
+    input.classList.add('mb-1')
+    input.classList.add('mt-3')
+    input.rows = '3'
     return input
 }
 
@@ -65,6 +69,10 @@ function buttonRender(url, text){
     let button = document.createElement('button')
     button.innerText = text
     button.dataset['url'] = url
+    button.classList.add('btn')
+    button.classList.add('btn-secondary')
+    button.classList.add('me-3')
+    button.classList.add('mt-3')
     return button
 }
 
@@ -271,4 +279,3 @@ let display = async function (){
 }
 
 display()
-
