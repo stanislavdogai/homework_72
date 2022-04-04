@@ -70,20 +70,34 @@ class QuoteDeleteApiView(APIView):
         if request.user.has_perm('delete_quote'):
             quote = get_object_or_404(Quote, pk=kwargs['pk'])
             quote.delete()
-            return JsonResponse({'pk' : kwargs['pk']}, status=204)
+            return Response({'pk' : kwargs['pk']}, status=204)
         else:
             return Response({"err": "К сожалению у вас нет доступа для удаления"}, status=HTTPStatus.BAD_REQUEST)
 
 class AddRateApiView(APIView):
     def get(self, request, *args, **kwargs):
-        quote = Quote.objects.get(pk=kwargs['pk'])
-        quote.rate += 1
-        quote.save()
-        return JsonResponse({'answer' : quote.rate}, status=HTTPStatus.OK)
+        session = request.session.get('+')
+        if not session:
+            quote = Quote.objects.get(pk=kwargs['pk'])
+            quote.rate += 1
+            quote.save()
+            request.session['+'] = {'+' : ''}
+            if request.session.get('-'):
+                request.session.pop('-')
+            return JsonResponse({'answer' : quote.rate}, status=HTTPStatus.OK)
+        else:
+            return Response({"err": "К сожалению вы уже поставили оценку"}, status=HTTPStatus.BAD_REQUEST)
 
 class RemoveRateApiView(APIView):
     def get(self, request, *args, **kwargs):
-        quote = Quote.objects.get(pk=kwargs['pk'])
-        quote.rate -= 1
-        quote.save()
-        return JsonResponse({'answer' : quote.rate}, status=HTTPStatus.OK)
+        session = request.session.get('-')
+        if not session:
+            quote = Quote.objects.get(pk=kwargs['pk'])
+            quote.rate -= 1
+            quote.save()
+            request.session['-'] = {'-' : ''}
+            if request.session.get('+'):
+                request.session.pop('+')
+            return JsonResponse({'answer' : quote.rate}, status=HTTPStatus.OK)
+        else:
+            return Response({"err": "К сожалению вы уже поставили оценку"}, status=HTTPStatus.BAD_REQUEST)

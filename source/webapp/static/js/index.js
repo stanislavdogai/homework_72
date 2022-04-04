@@ -138,7 +138,6 @@ let removeRate = async function (event){
                 'Content-Type': 'application/json',
             }
         });
-    console.log(add)
     let p = document.getElementById(`quote-rate-${id}`)
     p.innerText = `Оценка ${add.answer}`
 }
