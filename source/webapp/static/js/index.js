@@ -29,16 +29,17 @@ function quoteRender(id, name, text, rate, email, date){
     let div = document.createElement('div')
     div.classList.add('mb-5')
     div.id = `${id}`
-
-
     let p_name = document.createElement('p')
     let a_text = document.createElement('a')
     let p_rate = document.createElement('p')
     let p_email = document.createElement('p')
     let p_date = document.createElement('p')
+
     p_name.innerText = `Имя автора ${name}`
     a_text.innerText = `${text}`
-    a_text.href = `http://localhost:8000/api/${id}/detail`
+    a_text.href = `#`
+    a_text.dataset['url'] = `http://localhost:8000/api/${id}/detail`
+    a_text.onclick = detailQuote
     p_rate.innerText = `Оценка ${rate}`
     p_rate.id = `quote-rate-${id}`
     p_email.innerText = `Почта ${email}`
@@ -98,28 +99,40 @@ let listQuote = async function (event){
     }
 }
 
+let detailQuote = async function(event){
+    removeDisplay()
+    var url = event.target.dataset.url
+    container = document.getElementById('container')
+    var quote = await makeRequest(url)
+    q = quoteRender(quote.id, quote.name, quote.text, quote.rate, quote.email, quote.created_at)
+    container.appendChild(q)
+}
+
 let addRate = async function (event){
     let url = event.target.dataset.url
     let id = event.target.dataset.id
-    let add = makeRequest(url, {
+    let add = await makeRequest(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             }
         });
-    // let p = document.getElementById(`quote-rate-${id}`)
-    console.log('add', add)
-    // p.innerText = add.answer
+    let p = document.getElementById(`quote-rate-${id}`)
+    p.innerText = `Оценка ${add.answer}`
 }
 
 let removeRate = async function (event){
     let url = event.target.dataset.url
-    let add = makeRequest(url, {
+    let id = event.target.dataset.id
+    let add = await makeRequest(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             }
-        })
+        });
+    console.log(add)
+    let p = document.getElementById(`quote-rate-${id}`)
+    p.innerText = `Оценка ${add.answer}`
 }
 
 let deleteQuote = function(event){
@@ -259,4 +272,3 @@ let display = async function (){
 
 display()
 
-// window.addEventListener('load', listQuote)

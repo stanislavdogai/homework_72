@@ -79,11 +79,11 @@ class AddRateApiView(APIView):
         quote = Quote.objects.get(pk=kwargs['pk'])
         quote.rate += 1
         quote.save()
-        return Response({'answer' : quote.rate}, status=HTTPStatus.OK)
+        return JsonResponse({'answer' : quote.rate}, status=HTTPStatus.OK)
 
 class RemoveRateApiView(APIView):
     def get(self, request, *args, **kwargs):
         quote = Quote.objects.get(pk=kwargs['pk'])
         quote.rate -= 1
         quote.save()
-        return JsonResponse({}, status=HTTPStatus.OK)
+        return JsonResponse({'answer' : quote.rate}, status=HTTPStatus.OK)
