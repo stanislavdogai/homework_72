@@ -100,8 +100,8 @@ let deleteQuote = async function(event){
     let quote = await makeRequest(url, {method: 'DELETE',
                                         body: {"delete" : "delete"},
                                         headers: {
-                                            'Content-Type': 'application/json',
-                                            'accept' : 'application/json',
+                                            // 'Content-Type': 'application/json',
+                                            // 'accept' : 'application/json',
                                             'X-CSRFToken': csrf
                                         }
                                         });
